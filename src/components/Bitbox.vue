@@ -24,8 +24,8 @@
 </template>
 
 <script>
-let BITBOXCli = require('bitbox-cli/lib/bitbox-cli').default
-let BITBOX = new BITBOXCli()
+let BITBOXSDK = require('bitbox-sdk/lib/bitbox-sdk').default
+let BITBOX = new BITBOXSDK()
 
 let langs = [
   'english',
@@ -61,56 +61,68 @@ let cashAddress = BITBOX.HDNode.toCashAddress(change)
 let hex
 let txid
 
-BITBOX.Address.utxo(cashAddress).then((result) => {
-  if (!result[0]) {
-    return
-  }
+BITBOX.Address.utxo(cashAddress).then(
+  result => {
+    if (!result[0]) {
+      return
+    }
 
-  // instance of transaction builder
-  let transactionBuilder = new BITBOX.TransactionBuilder('bitcoincash')
-  // original amount of satoshis in vin
-  let originalAmount = result[0].satoshis
+    // instance of transaction builder
+    let transactionBuilder = new BITBOX.TransactionBuilder('bitcoincash')
+    // original amount of satoshis in vin
+    let originalAmount = result[0].satoshis
 
-  // index of vout
-  let vout = result[0].vout
+    // index of vout
+    let vout = result[0].vout
 
-  // txid of vout
-  txid = result[0].txid
+    // txid of vout
+    txid = result[0].txid
 
-  // add input with txid and index of vout
-  transactionBuilder.addInput(txid, vout)
+    // add input with txid and index of vout
+    transactionBuilder.addInput(txid, vout)
 
-  // get byte count to calculate fee. paying 1 sat/byte
-  let byteCount = BITBOX.BitcoinCash.getByteCount({ P2PKH: 1 }, { P2PKH: 1 })
-  // 192
-  // amount to send to receiver. It's the original amount - 1 sat/byte for tx size
-  let sendAmount = originalAmount - byteCount
+    // get byte count to calculate fee. paying 1 sat/byte
+    let byteCount = BITBOX.BitcoinCash.getByteCount({ P2PKH: 1 }, { P2PKH: 1 })
+    // 192
+    // amount to send to receiver. It's the original amount - 1 sat/byte for tx size
+    let sendAmount = originalAmount - byteCount
 
-  // add output w/ address and amount to send
-  transactionBuilder.addOutput(cashAddress, sendAmount)
+    // add output w/ address and amount to send
+    transactionBuilder.addOutput(cashAddress, sendAmount)
 
-  // keypair
-  let keyPair = BITBOX.HDNode.toKeyPair(change)
+    // keypair
+    let keyPair = BITBOX.HDNode.toKeyPair(change)
 
-  // sign w/ HDNode
-  let redeemScript
-  transactionBuilder.sign(0, keyPair, redeemScript, transactionBuilder.hashTypes.SIGHASH_ALL, originalAmount)
+    // sign w/ HDNode
+    let redeemScript
+    transactionBuilder.sign(
+      0,
+      keyPair,
+      redeemScript,
+      transactionBuilder.hashTypes.SIGHASH_ALL,
+      originalAmount
+    )
 
-  // build tx
-  let tx = transactionBuilder.build()
-  // output rawhex
-  hex = tx.toHex()
+    // build tx
+    let tx = transactionBuilder.build()
+    // output rawhex
+    hex = tx.toHex()
 
-  // sendRawTransaction to running BCH node
-  BITBOX.RawTransactions.sendRawTransaction(hex).then((result) => {
-    txid = result
-    console.log(result)
-  }, (err) => {
+    // sendRawTransaction to running BCH node
+    BITBOX.RawTransactions.sendRawTransaction(hex).then(
+      result => {
+        txid = result
+        console.log(result)
+      },
+      err => {
+        console.log(err)
+      }
+    )
+  },
+  err => {
     console.log(err)
-  })
-}, (err) => {
-  console.log(err)
-})
+  }
+)
 
 let addresses = []
 for (let i = 0; i < 10; i++) {
@@ -120,7 +132,7 @@ for (let i = 0; i < 10; i++) {
 
 export default {
   name: 'BitBox',
-  data () {
+  data() {
     return {
       mnemonic: BITBOX.Mnemonic.generate(256),
       lang: lang,
@@ -132,9 +144,9 @@ export default {
 </script>
 
 <style scoped>
-  .App {
-    font-family: sans-serif;
-    max-width: 100%;
-    word-wrap: break-word;
-  }
+.App {
+  font-family: sans-serif;
+  max-width: 100%;
+  word-wrap: break-word;
+}
 </style>
