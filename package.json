@@ -5,8 +5,7 @@
   "description": "Basic vuejs app w/ BITBOX bindings",
   "author": "Gabriel Cardona <gabriel@bitcoin.com>",
   "engines": {
-    "node": ">= 6.0.0",
-    "npm": ">= 3.0.0"
+    "node": ">=10.15.1"
   },
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
