@@ -1,11 +1,11 @@
 {
   "name": "bitbox-scaffold-vue",
-  "version": "6.1.1",
+  "version": "7.0.12",
   "license": "MIT",
   "description": "Basic vuejs app w/ BITBOX bindings",
   "author": "Gabriel Cardona <gabriel@bitcoin.com>",
   "engines": {
-    "node": ">=10.15.1"
+    "node": ">=10.15.3"
   },
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
@@ -15,7 +15,7 @@
     "coverage:report": "nyc --reporter=html mocha --require babel-core/register --timeout 5000"
   },
   "dependencies": {
-    "bitbox-sdk": "6.1.1",
+    "bitbox-sdk": "7.0.12",
     "mocha": "^5.2.0",
     "vue": "^2.5.2"
   },
