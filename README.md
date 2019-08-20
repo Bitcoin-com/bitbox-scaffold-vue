@@ -2,6 +2,8 @@
 
 ## Setup
 
+[Known Issue](https://github.com/Bitcoin-com/bitbox-sdk/issues/27)
+
 1. [Install `bitbox-sdk`](https://www.npmjs.com/package/bitbox-sdk) globally
    - `npm install bitbox-sdk --global`
 2. Scaffold an Angular app w/ BITBOX web bindings
